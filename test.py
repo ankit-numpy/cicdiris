@@ -13,7 +13,7 @@ def clients():
 def test_home_page(clients):
     response=clients.get('/')
     assert response.status_code==200
-    assert b"Welcome to the Iris Prediction API!" in response.data
+    assert b"Iris Flower Classifier" in response.data   # Check for HTML title
 
 def test_compute_page(clients):
     response=clients.post('/compute', json={'features': [5.1, 3.5, 1.4, 0.2]})
