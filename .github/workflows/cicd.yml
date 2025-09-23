@@ -27,14 +27,12 @@ jobs:
 
   deploy:
     needs: test 
-    if : github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    if : github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     steps:
     - name: Check out repository code 
-      uses: actions/checkout@v2 
-
-
-
+      uses: actions/checkout@v4 
     - name: Deploy to Render
       env:
         RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
