@@ -25,22 +25,22 @@ jobs:
     - name: Test with pytest
       run: pytest test.py
 
-  deploy:
-    needs: test 
+  deploy:  # Job for deployment, depends on test job
+    needs: test  # Only run if test succeeds
     runs-on: ubuntu-latest
-    if : github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only on pushes to main
 
     steps:
-    - name: Check out repository code 
-      uses: actions/checkout@v4 
-    - name: Deploy to Render
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to Render  # Step to trigger Render deployment via API
       env:
-        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-        RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }} 
-        
-      run:  
-      |  curl -X POST \
-         -H "Authorization: Bearer  $RENDER_API_KEY" \
-         -H "Content-Type: application/json" \
-         -d '{"clearCache": false}' \
-          https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Use GitHub secret
+        RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}  # Use GitHub secret
+      run: |
+        curl -X POST \
+        -H "Authorization: Bearer $RENDER_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d '{"clearCache": false}' \
+        https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys
